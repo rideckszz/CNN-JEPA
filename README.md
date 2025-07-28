@@ -1,39 +1,33 @@
-# CNN-JEPA
+# CNN-JEPA: Self-Supervised Pretraining Convolutional Neural Networks Using Joint Embedding Predictive Architecture
 
 This repository is the official implementation of [*CNN-JEPA: Self-Supervised Pretraining Convolutional Neural Networks Using Joint Embedding Predictive Architecture*](https://arxiv.org/abs/2408.07514)
 
-[[arxiv](https://arxiv.org/abs/2408.07514)]
+[[arXiv preprint](https://arxiv.org/abs/2408.07514)] [[Official Publication (IEEE Xplore)](https://ieeexplore.ieee.org/document/10903240)]
 
-![Architecture](.github/Architecture.svg)
+## Algorithm Overview
 
-Results on ImageNet-100
-
-<img src=".github/training_cost_vs_lin_top1_2_labels.svg" alt="Training cost vs linear top-1 accuracy on ImageNet-100 figure" style="zoom: 33%;" />
+![](.github/Poster.png)
 
 If you use our code or results, please cite our paper and consider giving this repo a :star: :
 ```
-@misc{kalapos2024cnnjepa,
-      title={CNN-JEPA: Self-Supervised Pretraining Convolutional Neural Networks Using Joint Embedding Predictive Architecture}, 
-      author={András Kalapos and Bálint Gyires-Tóth},
-      year={2024},
-      eprint={2408.07514},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2408.07514}, 
-}
+@INPROCEEDINGS{kalapos2024cnnjepa,
+  author={Kalapos, András and Gyires-Tóth, Bálint},
+  booktitle={2024 International Conference on Machine Learning and Applications (ICMLA)}, 
+  title={CNN-JEPA: Self-Supervised Pretraining Convolutional Neural Networks Using Joint Embedding Predictive Architecture}, 
+  year={2024},
+  pages={1111-1114},
+  doi={10.1109/ICMLA61862.2024.00169}}
 ```
 
 ## Related papers
-![](.github/RelationToOtherPapers.svg)
-
-[1] M. Assran et al., **Self-Supervised Learning From Images With a Joint-Embedding Predictive Architecture**, presented at the Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2023, pp. 15619–15629. [[paper](https://openaccess.thecvf.com/content/CVPR2023/html/Assran_Self-Supervised_Learning_From_Images_With_a_Joint-Embedding_Predictive_Architecture_CVPR_2023_paper.html)] [[code](https://github.com/facebookresearch/ijepa)]
-
+[1] K. He, X. Chen, S. Xie, Y. Li, P. Dollár, and R. Girshick, **Masked Autoencoders Are Scalable Vision Learners**, presented at the Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2022, pp. 16000–16009. [[paper](https://openaccess.thecvf.com/content/CVPR2022/html/He_Masked_Autoencoders_Are_Scalable_Vision_Learners_CVPR_2022_paper.html)]
 
 [2] K. Tian, Y. Jiang, Q. Diao, C. Lin, L. Wang, and Z. Yuan, **Designing BERT for Convolutional Networks: Sparse and Hierarchical Masked Modeling**, presented at The Eleventh International Conference on Learning Representations, Sep. 2022. [[paper](https://openreview.net/forum?id=NRxydtWup1S)] [[code](https://github.com/keyu-tian/SparK)]
 
-[3] K. He, X. Chen, S. Xie, Y. Li, P. Dollár, and R. Girshick, **Masked Autoencoders Are Scalable Vision Learners**, presented at the Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2022, pp. 16000–16009. [[paper](https://openaccess.thecvf.com/content/CVPR2022/html/He_Masked_Autoencoders_Are_Scalable_Vision_Learners_CVPR_2022_paper.html)]
+[3] M. Assran et al., **Self-Supervised Learning From Images With a Joint-Embedding Predictive Architecture**, presented at the Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2023, pp. 15619–15629. [[paper](https://openaccess.thecvf.com/content/CVPR2023/html/Assran_Self-Supervised_Learning_From_Images_With_a_Joint-Embedding_Predictive_Architecture_CVPR_2023_paper.html)] [[code](https://github.com/facebookresearch/ijepa)]
 
 ## How to run
+
 Configs are provided for ImageNet-100 and ImageNet-1k.
 ```bash
 PYTHONPATH=. python pretrain/train_ijepacnn.py --config-name ijepacnn_imagenet.yaml
