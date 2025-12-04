@@ -1,0 +1,22 @@
+model:
+  name: ijepa_cnn
+  encoder_name: resnet50
+  predictor_name: resnet18
+  dim_latent: 2048
+  dim_hidden: 1024
+data:
+  dataset: corel
+  root: ./Corel-1K
+  metadata_csv: ./corel_metadata_clean.csv
+  image_size: 224
+  num_workers: 6
+  batch_size: 64
+optimizer:
+  lr: 0.001
+  weight_decay: 0.0001
+training:
+  epochs: 200
+  ema_decay: 0.996
+  log_interval: 100
+  save_interval: 10
+  output_dir: ./cnn_jepa_corel_checkpoints

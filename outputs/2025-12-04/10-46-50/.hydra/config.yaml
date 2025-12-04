@@ -1,0 +1,32 @@
+name: ijepacnn_corel
+seed: 42
+wandb: false
+artifacts_root: ./artifacts
+backbone:
+  name: resnet50
+  pretrained_weights: none
+  kwargs: {}
+data:
+  dataset_name: corel
+  root: /local1/derick/final_project/Corel-1K
+  num_workers: 6
+  image_size: 224
+  metadata_csv: ./corel_metadata_clean.csv
+optimizer:
+  lr: 0.001
+  weight_decay: 0.0001
+  batch_size: 64
+  algorithm: adamw
+  exclude_norm_and_bias_from_wd: false
+  wd_schedule: false
+  cosine_warmpup_sched: false
+  lr_warmup_epochs: 10
+trainer:
+  max_epochs: 200
+  accelerator: gpu
+  devices: 1
+  log_every_n_steps: 50
+  enable_checkpointing: true
+  enable_progress_bar: true
+  deterministic: false
+  benchmark: true

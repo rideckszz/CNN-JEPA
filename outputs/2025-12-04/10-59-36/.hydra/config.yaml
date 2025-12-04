@@ -1,0 +1,25 @@
+name: ijepacnn_corel_b{optimizer.batch_size}_lr{optimizer.lr}
+artifacts_root: artifacts/ijepacnn_corel
+seed: 42
+wandb: false
+use_projection_head: true
+backbone:
+  name: resnet50
+  pretrained_weights: imagenet
+  kwargs: {}
+data:
+  dataset_name: corel
+  root: /local1/derick/final_project/Corel-1K
+  metadata_csv: /local1/derick/final_project/corel_metadata_clean.csv
+  num_workers: 6
+optimizer:
+  batch_size: 64
+  lr: 0.001
+  weight_decay: 0.0001
+  algorithm: adamw
+trainer:
+  max_epochs: 200
+  accelerator: gpu
+  devices: 1
+  precision: 16
+  log_every_n_steps: 50
