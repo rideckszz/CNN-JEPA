@@ -18,6 +18,9 @@ import timm
 import wandb
 import matplotlib.pyplot as plt
 
+from data.corel import CorelDataset
+
+
 from lightly.data import LightlyDataset
 from lightly.transforms.utils import IMAGENET_NORMALIZE
 from lightly.models.utils import deactivate_requires_grad, update_momentum
@@ -181,6 +184,7 @@ class LightlyModel(pl.LightningModule):
             "imagenette": Imagenette,
             "imagenet-100": HDF5ImageFolder, # Replaceable with torchvision.datasets.ImageFolder
             "imagenet-1k":  HDF5ImageFolder, # Replaceable with torchvision.datasets.ImageFolder
+            "corel": CorelDataset,
         }
         train_dataset_kwargs = {
             "cifar10": dict(root="/data/cifar10", download=True),
@@ -189,6 +193,11 @@ class LightlyModel(pl.LightningModule):
             "imagenette": dict(root="/data/imagenette", split='train', download=True),
             "imagenet-100": dict(root="/data/imagenet-100-train.h5"),
             "imagenet-1k": dict(root="/data/imagenet-train.h5"),
+                        "corel": dict(                    
+                root="/local1/derick/final_project/Corel-1K",
+                metadata_csv="/local1/derick/final_project/corel_metadata_clean.csv",
+                split="train",
+            )
         }
         val_dataset_kwargs = {
             "cifar10": dict(root="/data/cifar10", train=False),
