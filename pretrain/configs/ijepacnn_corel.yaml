@@ -3,28 +3,48 @@ defaults:
   - override hydra/hydra_logging: disabled
   - _self_
 
-model:
-  name: ijepa_cnn
-  encoder_name: resnet50
-  predictor_name: resnet18
-  dim_latent: 2048
-  dim_hidden: 1024
+# Run name pattern
+name: "ijepacnn_corel_{backbone[name]}_bs{optimizer[batch_size]}_lr{optimizer[lr]}"
 
+seed: 42
+wandb: false  # set true if you configure wandb
+
+# Where Lightning will save checkpoints, logs, etc.
+artifacts_root: "./artifacts"
+
+# Backbone used inside IJEPA-CNN
+backbone:
+  name: "resnet50"
+  pretrained_weights: "none"   # or "none"
+  kwargs: {}                       # extra args passed to timm.create_model
+
+# ========= DATA (Corel) =========
 data:
-  dataset: corel
-  root: ./Corel-1K
-  metadata_csv: ./corel_metadata_clean.csv
-  image_size: 224
+  dataset_name: "corel"            # IMPORTANT: trainer_common expects dataset_name
+  root: "/local1/derick/final_project/Corel-1K"               # your Corel directory with subfolders per class
   num_workers: 6
-  batch_size: 64
+  image_size: 224                  # used by transforms
+  # extra field – your code can ignore it, CNN-JEPA doesn’t need captions
+  metadata_csv: "./corel_metadata_clean.csv"
 
+# ========= OPTIMIZER =========
 optimizer:
   lr: 0.001
   weight_decay: 1e-4
+  batch_size: 64
+  algorithm: "adamw"
+  exclude_norm_and_bias_from_wd: false
+  wd_schedule: false
+  cosine_warmpup_sched: false
+  lr_warmup_epochs: 10
 
-training:
-  epochs: 200
-  ema_decay: 0.996
-  log_interval: 100
-  save_interval: 10
-  output_dir: ./cnn_jepa_corel_checkpoints
+# ========= TRAINING / LIGHTNING TRAINER =========
+trainer:
+  max_epochs: 200
+  accelerator: "gpu"
+  devices: 1
+  log_every_n_steps: 50
+  enable_checkpointing: true
+  enable_progress_bar: true
+  deterministic: false
+  benchmark: true

@@ -184,7 +184,7 @@ class LightlyModel(pl.LightningModule):
             "imagenette": Imagenette,
             "imagenet-100": HDF5ImageFolder, # Replaceable with torchvision.datasets.ImageFolder
             "imagenet-1k":  HDF5ImageFolder, # Replaceable with torchvision.datasets.ImageFolder
-            "corel": CorelDataset,
+            "corel": torchvision.datasets.ImageFolder,
         }
         train_dataset_kwargs = {
             "cifar10": dict(root="/data/cifar10", download=True),
@@ -192,12 +192,8 @@ class LightlyModel(pl.LightningModule):
             "tiny-imagenet": dict(root="/data/tiny-imagenet-200/train"),
             "imagenette": dict(root="/data/imagenette", split='train', download=True),
             "imagenet-100": dict(root="/data/imagenet-100-train.h5"),
-            "imagenet-1k": dict(root="/data/imagenet-train.h5"),
-                        "corel": dict(                    
-                root="/local1/derick/final_project/Corel-1K",
-                metadata_csv="/local1/derick/final_project/corel_metadata_clean.csv",
-                split="train",
-            )
+            "corel": dict(root="./Corel-1K"),
+            
         }
         val_dataset_kwargs = {
             "cifar10": dict(root="/data/cifar10", train=False),
@@ -205,7 +201,7 @@ class LightlyModel(pl.LightningModule):
             "tiny-imagenet": dict(root="/data/tiny-imagenet-200/val"),
             "imagenette": dict(root="/data/imagenette", split='val'),
             "imagenet-100": dict(root="/data/imagenet-100-val.h5"),
-            "imagenet-1k": dict(root="/data/imagenet-val.h5"),
+            "corel": dict(root="./Corel-1K"),
         }
         input_sizes = {
             "cifar10": 32,
@@ -214,6 +210,7 @@ class LightlyModel(pl.LightningModule):
             "imagenette": 224,
             "imagenet-100": 224,
             "imagenet-1k": 224,
+            "corel": 224,  
         }
         num_classes = {
             "cifar10": 10,
@@ -222,6 +219,7 @@ class LightlyModel(pl.LightningModule):
             "imagenette": 10,
             "imagenet-100": 100,
             "imagenet-1k": 1000,
+            "corel": 10,
         }
         self.dataset_class = dataset_classes[self.cfg.data.dataset_name]
         self.train_dataset_kwargs = train_dataset_kwargs[self.cfg.data.dataset_name]
