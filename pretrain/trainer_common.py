@@ -192,7 +192,7 @@ class LightlyModel(pl.LightningModule):
             "tiny-imagenet": dict(root="/data/tiny-imagenet-200/train"),
             "imagenette": dict(root="/data/imagenette", split='train', download=True),
             "imagenet-100": dict(root="/data/imagenet-100-train.h5"),
-            "corel": dict(root="./Corel-1K"),
+            "corel": dict(root="./local1/derick/final_project/Corel-1K"),
             
         }
         val_dataset_kwargs = {
@@ -201,7 +201,7 @@ class LightlyModel(pl.LightningModule):
             "tiny-imagenet": dict(root="/data/tiny-imagenet-200/val"),
             "imagenette": dict(root="/data/imagenette", split='val'),
             "imagenet-100": dict(root="/data/imagenet-100-val.h5"),
-            "corel": dict(root="./Corel-1K"),
+            "corel": dict(root="./local1/derick/final_project/Corel-1K"),
         }
         input_sizes = {
             "cifar10": 32,
