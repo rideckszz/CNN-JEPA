@@ -36,18 +36,29 @@ def _get_active_ex_or_ii(H, W, returning_active_ex):
 
 
 def sp_conv_forward(self, x: torch.Tensor):
+    # If no sparse mask is active (inference / feature extraction), use dense conv
+    global _cur_active
+    if _cur_active is None:
+        return super(type(self), self).forward(x)
+
+    # Otherwise apply sparse masking
     x = super(type(self), self).forward(x)
-    x *= _get_active_ex_or_ii(H=x.shape[2], W=x.shape[3], returning_active_ex=True)    # (BCHW) *= (B1HW), mask the output of conv
+    x *= _get_active_ex_or_ii(H=x.shape[2], W=x.shape[3], returning_active_ex=True)
     return x
 
 
 def sp_bn_forward(self, x: torch.Tensor):
+    # If inference: use dense BN
+    global _cur_active
+    if _cur_active is None:
+        return super(type(self), self).forward(x)
+
+    # Sparse BN (training-time masking)
     ii = _get_active_ex_or_ii(H=x.shape[2], W=x.shape[3], returning_active_ex=False)
-    
     bhwc = x.permute(0, 2, 3, 1)
-    nc = bhwc[ii]                               # select the features on non-masked positions to form a flatten feature `nc`
-    nc = super(type(self), self).forward(nc)    # use BN1d to normalize this flatten feature `nc`
-    
+    nc = bhwc[ii]
+    nc = super(type(self), self).forward(nc)
+
     bchw = torch.zeros_like(bhwc)
     bchw[ii] = nc
     bchw = bchw.permute(0, 3, 1, 2)
