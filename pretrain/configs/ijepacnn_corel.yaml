@@ -4,7 +4,8 @@ defaults:
   - _self_
 
 # Run name pattern
-name: "ijepacnn_corel_{backbone[name]}_bs{optimizer[batch_size]}_lr{optimizer[lr]}"
+name: "ijepacnn_corel"
+
 
 seed: 42
 wandb: false  # set true if you configure wandb
