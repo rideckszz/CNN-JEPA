@@ -3,49 +3,39 @@ defaults:
   - override hydra/hydra_logging: disabled
   - _self_
 
-# Run name pattern
-name: "ijepacnn_corel"
-
-
+# === general experiment config ===
+name: "ijepacnn_corel_b{optimizer.batch_size}_lr{optimizer.lr}"
+artifacts_root: "artifacts/ijepacnn_corel"
 seed: 42
-wandb: false  # set true if you configure wandb
+wandb: false        # set true if you want to log to W&B
 
-# Where Lightning will save checkpoints, logs, etc.
-artifacts_root: "./artifacts"
+# this is the key that was missing
+use_projection_head: true
 
-# Backbone used inside IJEPA-CNN
+# === backbone definition (what LightlyModel expects) ===
 backbone:
-  name: "resnet50"
-  pretrained_weights: "none"   # or "none"
-  kwargs: {}                       # extra args passed to timm.create_model
+  name: "resnet50"          # you can switch to convnext_tiny if you want
+  pretrained_weights: "imagenet"  # "imagenet" / null
+  kwargs: {}                # extra kwargs for timm.create_model
 
-# ========= DATA (Corel) =========
+# === data config ===
 data:
-  dataset_name: "corel"            # IMPORTANT: trainer_common expects dataset_name
-  root: "/local1/derick/final_project/Corel-1K"               # your Corel directory with subfolders per class
+  dataset_name: "corel"     # we'll still need to wire this inside the code
+  root: "/local1/derick/final_project/Corel-1K"
+  metadata_csv: "/local1/derick/final_project/corel_metadata_clean.csv"
   num_workers: 6
-  image_size: 224                  # used by transforms
-  # extra field – your code can ignore it, CNN-JEPA doesn’t need captions
-  metadata_csv: "./corel_metadata_clean.csv"
 
-# ========= OPTIMIZER =========
+# batch size lives under optimizer in their code
 optimizer:
+  batch_size: 64
   lr: 0.001
   weight_decay: 1e-4
-  batch_size: 64
   algorithm: "adamw"
-  exclude_norm_and_bias_from_wd: false
-  wd_schedule: false
-  cosine_warmpup_sched: false
-  lr_warmup_epochs: 10
 
-# ========= TRAINING / LIGHTNING TRAINER =========
+# === trainer args (what pl.Trainer(**cfg.trainer) will receive) ===
 trainer:
   max_epochs: 200
   accelerator: "gpu"
   devices: 1
+  precision: 16
   log_every_n_steps: 50
-  enable_checkpointing: true
-  enable_progress_bar: true
-  deterministic: false
-  benchmark: true
