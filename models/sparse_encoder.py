@@ -46,23 +46,31 @@ def sp_conv_forward(self, x: torch.Tensor):
     x *= _get_active_ex_or_ii(H=x.shape[2], W=x.shape[3], returning_active_ex=True)
     return x
 
-
 def sp_bn_forward(self, x: torch.Tensor):
-    # If inference: use dense BN
     global _cur_active
-    if _cur_active is None:
-        return super(type(self), self).forward(x)
 
-    # Sparse BN (training-time masking)
+    # === Dense / inference path: behave like BatchNorm2d ===
+    if _cur_active is None:
+        # x is (B, C, H, W); BatchNorm1d expects (N, C) or (N, C, L)
+        # So we flatten spatial dims into the batch dimension.
+        b, c, h, w = x.shape
+        x_flat = x.permute(0, 2, 3, 1).reshape(-1, c)  # (B*H*W, C)
+        x_bn = super(type(self), self).forward(x_flat)  # use BN1d on channel dim
+        x_bn = x_bn.view(b, h, w, c).permute(0, 3, 1, 2)  # back to (B, C, H, W)
+        return x_bn
+
+    # === Sparse training path (original logic) ===
     ii = _get_active_ex_or_ii(H=x.shape[2], W=x.shape[3], returning_active_ex=False)
+
     bhwc = x.permute(0, 2, 3, 1)
-    nc = bhwc[ii]
-    nc = super(type(self), self).forward(nc)
+    nc = bhwc[ii]                               # selected active positions
+    nc = super(type(self), self).forward(nc)    # BN1d on flattened active features
 
     bchw = torch.zeros_like(bhwc)
     bchw[ii] = nc
     bchw = bchw.permute(0, 3, 1, 2)
     return bchw
+
 
 
 class SparseConv2d(nn.Conv2d):
