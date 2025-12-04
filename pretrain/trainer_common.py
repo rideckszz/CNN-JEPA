@@ -32,7 +32,7 @@ from pretrain.online_classification_benchmark import OnlineLinearClassificationB
 import utils
 
 from data.imagenette import Imagenette
-from data.cached_imagenet import CachedImageNet
+# from data.cached_imagenet import CachedImageNet
 from data.hdf5_imagefolder import HDF5ImageFolder
 
 class LightlyModel(pl.LightningModule):
