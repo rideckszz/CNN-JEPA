@@ -9,12 +9,30 @@ import torch.nn as nn
 from timm.models.layers import DropPath
 
 
-_cur_active: torch.Tensor = None            # B1ff
-# todo: try to use `gather` for speed?
-def _get_active_ex_or_ii(H, W, returning_active_ex=True):
-    h_repeat, w_repeat = H // _cur_active.shape[-2], W // _cur_active.shape[-1]
-    active_ex = _cur_active.repeat_interleave(h_repeat, dim=2).repeat_interleave(w_repeat, dim=3)
-    return active_ex if returning_active_ex else active_ex.squeeze(1).nonzero(as_tuple=True)  # ii: bi, hi, wi
+_cur_active = None
+
+def _get_active_ex_or_ii(H, W, returning_active_ex):
+    """
+    Helper for sparse conv. If _cur_active is None (e.g. when we are just doing
+    plain inference / feature extraction), fall back to 'all positions active'.
+    """
+    global _cur_active
+
+    # If no mask was set by the JEPA masking logic, use a full-ones mask
+    if _cur_active is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        active_ex = torch.ones(1, 1, H, W, device=device)  # all active
+    else:
+        h_repeat = H // _cur_active.shape[-2]
+        w_repeat = W // _cur_active.shape[-1]
+        active_ex = _cur_active.repeat(1, 1, h_repeat, w_repeat)
+
+    if returning_active_ex:
+        return active_ex
+
+    # Otherwise return indices of active positions (flattened)
+    active_ii = active_ex.reshape(1, 1, -1).nonzero(as_tuple=False)[..., -1]
+    return active_ii
 
 
 def sp_conv_forward(self, x: torch.Tensor):
