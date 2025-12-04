@@ -4,7 +4,7 @@ defaults:
   - _self_
 
 # === general experiment config ===
-name: "ijepacnn_corel_b{optimizer.batch_size}_lr{optimizer.lr}"
+name: "ijepacnn_corel"
 artifacts_root: "artifacts/ijepacnn_corel"
 seed: 42
 wandb: false        # set true if you want to log to W&B
